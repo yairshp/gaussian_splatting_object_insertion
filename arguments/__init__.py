@@ -60,7 +60,6 @@ class ModelParams(ParamGroup):
         g = super().extract(args)
         g.source_path = os.path.abspath(g.source_path)
         return g
-
 class PipelineParams(ParamGroup):
     def __init__(self, parser):
         self.convert_SHs_python = False
@@ -68,17 +67,18 @@ class PipelineParams(ParamGroup):
         self.debug = False
         super().__init__(parser, "Pipeline Parameters")
 
+ # OptimizationParams
 class OptimizationParams(ParamGroup):
-    def __init__(self, parser):
-        self.iterations = 30_000
-        self.position_lr_init = 0.00016
-        self.position_lr_final = 0.0000016
+    def __init__(self, parser, max_steps, lr_scaler=1, lr_final_scaler=1, color_lr_scaler=1, opacity_lr_scaler=1, scaling_lr_scaler=1, rotation_lr_scaler=1,  ):
+        self.iterations = max_steps
+        self.position_lr_init = 0.00016 * lr_scaler
+        self.position_lr_final = 0.000016 * lr_final_scaler
         self.position_lr_delay_mult = 0.01
-        self.position_lr_max_steps = 30_000
-        self.feature_lr = 0.0025
-        self.opacity_lr = 0.05
-        self.scaling_lr = 0.005
-        self.rotation_lr = 0.001
+        self.position_lr_max_steps = max_steps
+        self.feature_lr = 0.0125 * color_lr_scaler
+        self.opacity_lr = 0.05 * opacity_lr_scaler
+        self.scaling_lr = 0.005 * scaling_lr_scaler
+        self.rotation_lr = 0.001 * rotation_lr_scaler
         self.percent_dense = 0.01
         self.lambda_dssim = 0.2
         self.densification_interval = 100
@@ -86,11 +86,33 @@ class OptimizationParams(ParamGroup):
         self.densify_from_iter = 500
         self.densify_until_iter = 15_000
         self.densify_grad_threshold = 0.0002
-        self.random_background = False
         super().__init__(parser, "Optimization Parameters")
 
-def get_combined_args(parser : ArgumentParser):
-    cmdlne_string = sys.argv[1:]
+# class EditOptimizationParams(ParamGroup):
+#     def __init__(self, parser,):
+#         self.iterations = 3_200
+#         self.position_lr_init = 0.00005
+#         self.position_lr_final = 0.000025
+#         self.position_lr_delay_mult = 0.5
+#         self.position_lr_max_steps = 30_000
+#         self.feature_lr = 0.0125
+#         self.opacity_lr = 0.01
+#         self.scaling_lr = 0.005
+#         self.rotation_lr = 0.001
+#         self.percent_dense = 0.01
+#         self.lambda_dssim = 0.2
+#         self.densification_interval = 100
+#         self.opacity_reset_interval = 3000
+#         self.densify_from_iter = 500
+#         self.densify_until_iter = 15_000
+#         self.densify_grad_threshold = 0.0002
+#         super().__init__(parser, "Optimization Parameters")
+
+
+
+def get_combined_args(parser : ArgumentParser, cmdlne_string: str = None):
+    if cmdlne_string is None:
+        cmdlne_string = sys.argv[1:]
     cfgfile_string = "Namespace()"
     args_cmdline = parser.parse_args(cmdlne_string)
 

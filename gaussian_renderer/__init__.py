@@ -15,7 +15,7 @@ from diff_gaussian_rasterization import (
     GaussianRasterizationSettings,
     GaussianRasterizer,
 )
-from gaussiansplatting.utils.sh_utils import eval_sh
+from utils.sh_utils import eval_sh
 
 
 def camera2rasterizer(viewpoint_camera, bg_color: torch.Tensor, sh_degree: int = 0):
@@ -128,7 +128,7 @@ def render(
 
     # Rasterize visible Gaussians to image, obtain their radii (on screen).
     # import pdb; pdb.set_trace()
-    rendered_image, radii, depth = rasterizer(
+    rendered_image, radii = rasterizer(
         means3D=means3D.float(),
         means2D=means2D.float(),
         shs=shs,
@@ -138,6 +138,16 @@ def render(
         rotations=rotations.float(),
         cov3D_precomp=cov3D_precomp,
     )
+    # rendered_image, radii, depth = rasterizer(
+    #     means3D=means3D.float(),
+    #     means2D=means2D.float(),
+    #     shs=shs,
+    #     colors_precomp=colors_precomp,
+    #     opacities=opacity.float(),
+    #     scales=scales.float(),
+    #     rotations=rotations.float(),
+    #     cov3D_precomp=cov3D_precomp,
+    # )
 
     # Those Gaussians that were frustum culled or had a radius of 0 were not visible.
     # They will be excluded from value updates used in the splitting criteria.
@@ -146,7 +156,7 @@ def render(
         "viewspace_points": screenspace_points,
         "visibility_filter": radii > 0,
         "radii": radii,
-        "depth_3dgs": depth,
+        # "depth_3dgs": depth,
     }
 
 
