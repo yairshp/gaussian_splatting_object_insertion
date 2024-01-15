@@ -69,7 +69,7 @@ class PipelineParams(ParamGroup):
 
  # OptimizationParams
 class OptimizationParams(ParamGroup):
-    def __init__(self, parser, max_steps, lr_scaler=1, lr_final_scaler=1, color_lr_scaler=1, opacity_lr_scaler=1, scaling_lr_scaler=1, rotation_lr_scaler=1,  ):
+    def __init__(self, parser, max_steps=None, lr_scaler=1, lr_final_scaler=1, color_lr_scaler=1, opacity_lr_scaler=1, scaling_lr_scaler=1, rotation_lr_scaler=1,  ):
         self.iterations = max_steps
         self.position_lr_init = 0.00016 * lr_scaler
         self.position_lr_final = 0.000016 * lr_final_scaler
