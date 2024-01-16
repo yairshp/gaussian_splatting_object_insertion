@@ -1,3 +1,4 @@
+# TODO add copyright to GaussianEditor
 #
 # Copyright (C) 2023, Inria
 # GRAPHDECO research group, https://team.inria.fr/graphdeco
@@ -88,6 +89,38 @@ class GaussianModelConcatable:
         self.setup_functions()
         self.anchor = {}
         self.localize = False
+
+    @staticmethod
+    def from_other_gaussian(other):
+        new_gaussian = GaussianModelConcatable(other.max_sh_degree, other.anchor_weight_init_g0, other.anchor_weight_init, other.anchor_weight_multiplier)
+        new_gaussian.active_sh_degree = 0
+        new_gaussian.anchor_weight_init = other.anchor_weight_init
+        new_gaussian.anchor_weight_multiplier = other.anchor_weight_multiplier
+        new_gaussian._anchor_loss_schedule = torch.tensor(
+            [other.anchor_weight_init_g0], device="cuda"
+        ) # generation 0 begin from weight 0
+        new_gaussian.anchor_weight_init_g0 = other.anchor_weight_init_g0
+        # new_gaussianlf._anchor_loss_schedule[x] = y means weight y will be multiplied to the anchor loss of generation x
+        new_gaussian.max_sh_degree = other.max_sh_degree
+        new_gaussian._generation = other._generation.detach().clone()
+        new_gaussian._xyz = other._xyz.detach().clone()
+        new_gaussian._features_dc = other._features_dc.detach().clone()
+        new_gaussian._features_rest = other._features_rest.detach().clone()
+        new_gaussian._scaling = other._scaling.detach().clone()
+        new_gaussian._rotation = other._rotation.detach().clone()
+        new_gaussian._opacity = other._opacity.detach().clone()
+        new_gaussian.max_radii2D = other.max_radii2D.detach().clone()
+        new_gaussian.xyz_gradient_accum = other.xyz_gradient_accum.detach().clone()
+        new_gaussian.denom = other.denom.detach().clone()
+        new_gaussian.optimizer = other.optimizer
+        new_gaussian.percent_dense = other.percent_dense
+        new_gaussian.spatial_lr_scale = other.spatial_lr_scale
+        new_gaussian.setup_functions()
+        new_gaussian.anchor = {}
+        new_gaussian.localize = other.localize
+        new_gaussian.mask = other.mask.detach().clone()
+        new_gaussian.hooks = list(other.hooks)
+        return new_gaussian
 
     def update_anchor_term(self, anchor_weight_init_g0: float,
                            anchor_weight_init: float,
@@ -904,7 +937,7 @@ class GaussianModelConcatable:
 
         return mask_to_update
 
-    def concat_gaussians(self, another_gaussian, tvec):
+    def concat_gaussians(self, another_gaussian, tvec=None):
         # return a mask
         # new_xyz = another_gaussian._xyz
         # new_features_dc = another_gaussian._features_dc
@@ -920,7 +953,8 @@ class GaussianModelConcatable:
         #     new_scaling,
         #     new_rotation,
         # )
-        another_gaussian._xyz = another_gaussian._xyz.clone() + tvec[None, ...]
+        if tvec is not None:
+            another_gaussian._xyz = another_gaussian._xyz.clone() + tvec[None, ...]
         self.densification_postfix(
             another_gaussian._xyz,
             another_gaussian._features_dc,
