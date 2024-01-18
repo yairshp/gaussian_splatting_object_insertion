@@ -1,3 +1,9 @@
+# import sys
+# from pathlib import Path # if you haven't already done so
+# file = Path(__file__).resolve()
+# parent, root = file.parent, file.parents[2]
+# sys.path.append(str(root))
+
 import torch
 import torch.nn as nn
 
@@ -5,7 +11,7 @@ from gaussian_renderer import render
 
 # typing related imports
 from scene.gaussian_model_concatable import GaussianModelConcatable
-from scene.vanilla_gaussian_model import VanillaGaussianModel
+from scene.vanilla_gaussian_model import GaussianModel as VanillaGaussianModel
 from arguments import PipelineParams
 
 class ObjectInserter(nn.Module):
@@ -31,5 +37,5 @@ class ObjectInserter(nn.Module):
         return rendering
 
     def reset_fg_gaussian(self):
-        self.curr_fg_gaussian = self.original_fg_gaussian
+        self.curr_fg_gaussian = GaussianModelConcatable.from_other_gaussian(self.original_fg_gaussian)
         self.curr_fg_gaussian.training_setup(self.training_params)

@@ -1,3 +1,9 @@
+# import sys
+# from pathlib import Path # if you haven't already done so
+# file = Path(__file__).resolve()
+# parent, root = file.parent, file.parents[3]
+# sys.path.append(str(root))
+
 from torch.utils.data import Dataset
 
 from scene import Scene
