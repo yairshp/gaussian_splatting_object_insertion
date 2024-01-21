@@ -18,6 +18,7 @@ class SceneViewsDataset(Dataset):
         gaussians = VanillaGaussianModel(dataset_params.sh_degree)
         scene = Scene(dataset_params, gaussians, load_iteration=iteration, shuffle=False)
         self.scene_views = scene.getTrainCameras()
+        self.scene_views = [self.scene_views[4],self.scene_views[7],self.scene_views[28],self.scene_views[36]]
 
     def __len__(self):
         return len(self.scene_views)

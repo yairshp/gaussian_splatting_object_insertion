@@ -1,8 +1,10 @@
-import gc
-
+import wandb
 import torch
 from torch.utils.data import DataLoader
 from torch.optim import Adam
+from torchvision import transforms
+from pytorch3d.transforms import axis_angle_to_matrix
+from kornia.geometry.quaternion import Quaternion
 
 from omegaconf import OmegaConf
 from argparse import ArgumentParser
@@ -20,7 +22,27 @@ BG_SCENE_PATH = '/root/projects/insert_object/data/garden/output'
 BG_GAUSSIANS_PATH = '/root/projects/insert_object/data/garden/output/point_cloud/iteration_7000/point_cloud.ply'
 FG_GAUSSIANS_PATH = '/root/projects/insert_object/data/hotdog/output/point_cloud/iteration_30000/point_cloud.ply'
 LR = 0.0001
+EPOCHS = 20
 
+@torch.no_grad()
+def scale_gaussians(gaussian, scale):
+    gaussian._xyz.data = gaussian._xyz.data * scale
+    g_scale = gaussian.get_scaling * scale
+    gaussian._scaling.data = torch.log(g_scale + 1e-7)
+
+
+@torch.no_grad()
+def rotate_gaussians(gaussian, rotmat):
+    rot_q = Quaternion.from_matrix(rotmat[None, ...])
+    g_qvec = Quaternion(gaussian.get_rotation)
+    gaussian._rotation.data = (rot_q * g_qvec).data
+
+    gaussian._xyz.data = torch.einsum("ij,bj->bi", rotmat, gaussian._xyz.data)
+
+
+@torch.no_grad()
+def translate_gaussians(gaussian, tvec):
+    gaussian._xyz.data = gaussian._xyz.data + tvec[None, ...]
 def get_params(gaussians_path):
     parser = ArgumentParser(description="Testing script parameters")
     model = ModelParams(parser, sentinel=True)
@@ -70,6 +92,7 @@ def disable_grads(gaussians):
 
 def main():
     # with torch.cuda.device(0):
+    wandb.init(project="insert-object")
     params = get_params(BG_SCENE_PATH)
     fg_gaussians = GaussianModelConcatable(
                 sh_degree=0,
@@ -81,6 +104,15 @@ def main():
     bg_gaussians = VanillaGaussianModel(fg_gaussians.max_sh_degree)
     bg_gaussians.load_ply(BG_GAUSSIANS_PATH)
 
+    scale_gaussians(fg_gaussians, 0.4)
+
+    tvec = torch.tensor([1.2, 3.5, -1.2], requires_grad=True).to('cuda')
+    translate_gaussians(fg_gaussians, tvec)
+
+    rotation_axes = torch.tensor([torch.pi/1.5, 0, 0]).to('cuda')
+    rotation_matrix = axis_angle_to_matrix(rotation_axes)
+    rotate_gaussians(fg_gaussians, rotation_matrix)
+
     disable_grads(fg_gaussians)
 
     scene_views_dataset = SceneViewsDataset(params["dataset_params"], params["iteration"])
@@ -91,16 +123,31 @@ def main():
 
     optimizer = Adam(object_inserter.parameters(), lr=LR)
     
-    for view in dataloader:
-        optimizer.zero_grad()
-        rendering = object_inserter(view)
-        # loss = losses.vae_reconstrucion_loss(rendering)
-        # loss = losses.diffusion_reconstruction_loss(rendering.to('cuda:1'))
-        loss = losses.diffusion_reconstruction_loss(rendering.to('cpu'))
-        # loss = losses.debug_loss(rendering)
-        loss.backward()
-        optimizer.step()
-        torch.cuda.empty_cache()
+    to_img = transforms.ToPILImage()
+
+    for epoch in range(EPOCHS):
+        # avg_loss = torch.tensor(0, dtype=torch.float32)
+        imgs = []
+        for i, view in enumerate(dataloader):
+            optimizer.zero_grad()
+            rendering = object_inserter(view).to('cpu')
+            # loss = losses.vae_reconstrucion_loss(rendering)
+            # loss = losses.diffusion_reconstruction_loss(rendering.to('cuda:1'))
+            loss = losses.diffusion_reconstruction_loss(rendering.to('cpu'))
+            # loss = losses.debug_loss(rendering)
+            # avg_loss += loss / torch.tensor(len(dataloader), dtype=loss.dtype, device=loss.device)
+            loss.backward()
+            optimizer.step()
+            torch.cuda.empty_cache()
+        # avg_loss.backward()
+        # optimizer.step()
+            print(f"Epoch: {epoch + 1}, View: {i + 1}, Loss: {loss}")
+            wandb.log({'loss': loss})
+            if epoch % 3 == 0:
+                imgs.append(wandb.Image(to_img(rendering)))
+                if i == len(dataloader) - 1:
+                    wandb.log({'renderings': imgs})
+        
 
 if __name__ == "__main__":
     main()

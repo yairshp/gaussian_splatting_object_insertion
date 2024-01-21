@@ -13,7 +13,7 @@ def debug_loss(img):
     loss = mse_loss(y, img)
     del y
     torch.cuda.empty_cache()
-    return loss
+    return loss.to('cpu')
 
 def vae_reconstrucion_loss(img):
     encoding_transforms = transforms.Compose(
