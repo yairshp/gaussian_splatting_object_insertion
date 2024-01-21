@@ -158,12 +158,12 @@ class GaussianModelConcatable:
 
     def update_anchor(self):
         self.anchor = dict(
-            _xyz=self._xyz.detach().clone(),
-            _features_dc=self._features_dc.detach().clone(),
-            _features_rest=self._features_rest.detach().clone(),
-            _scaling=self._scaling.detach().clone(),
-            _rotation=self._rotation.detach().clone(),
-            _opacity=self._opacity.detach().clone(),
+            _xyz=self._xyz.detach().clone().to('cpu'),
+            _features_dc=self._features_dc.detach().clone().to('cpu'),
+            _features_rest=self._features_rest.detach().clone().to('cpu'),
+            _scaling=self._scaling.detach().clone().to('cpu'),
+            _rotation=self._rotation.detach().clone().to('cpu'),
+            _opacity=self._opacity.detach().clone().to('cpu'),
         )
 
     def update_anchor_loss_schedule(self):
@@ -683,14 +683,14 @@ class GaussianModelConcatable:
             new_scaling,
             new_rotation,
     ):
-        d = {
-            "xyz": new_xyz,
-            "f_dc": new_features_dc,
-            "f_rest": new_features_rest,
-            "opacity": new_opacities,
-            "scaling": new_scaling,
-            "rotation": new_rotation,
-        }
+        # d = {
+        #     "xyz": new_xyz,
+        #     "f_dc": new_features_dc,
+        #     "f_rest": new_features_rest,
+        #     "opacity": new_opacities,
+        #     "scaling": new_scaling,
+        #     "rotation": new_rotation,
+        # }
 
         # optimizable_tensors = self.cat_tensors_to_optimizer(d)
         # self._xyz = optimizable_tensors["xyz"]
@@ -699,12 +699,12 @@ class GaussianModelConcatable:
         # self._opacity = optimizable_tensors["opacity"]
         # self._scaling = optimizable_tensors["scaling"]
         # self._rotation = optimizable_tensors["rotation"]
-        self._xyz = torch.cat((self.optimizer.param_groups[0]['params'][0], d['xyz']))
-        self._features_dc = torch.cat((self._features_dc, d['f_dc']))
-        self._features_rest = torch.cat((self._features_rest, d['f_rest']))
-        self._opacity = torch.cat((self._opacity, d['opacity']))
-        self._scaling = torch.cat((self._scaling, d['scaling']))
-        self._rotation = torch.cat((self._rotation, d['rotation']))
+        self._xyz = torch.cat((self.optimizer.param_groups[0]['params'][0], new_xyz))
+        self._features_dc = torch.cat((self._features_dc, new_features_dc))
+        self._features_rest = torch.cat((self._features_rest, new_features_rest))
+        self._opacity = torch.cat((self._opacity, new_opacities))
+        self._scaling = torch.cat((self._scaling, new_scaling))
+        self._rotation = torch.cat((self._rotation, new_rotation))
 
         self.xyz_gradient_accum = torch.zeros((self.get_xyz.shape[0], 1), device="cuda")
         self.denom = torch.zeros((self.get_xyz.shape[0], 1), device="cuda")
@@ -954,7 +954,7 @@ class GaussianModelConcatable:
         #     new_rotation,
         # )
         if tvec is not None:
-            another_gaussian._xyz = another_gaussian._xyz.clone() + tvec[None, ...]
+            another_gaussian._xyz = another_gaussian._xyz.detach().clone() + tvec[None, ...]
         self.densification_postfix(
             another_gaussian._xyz,
             another_gaussian._features_dc,
@@ -963,11 +963,11 @@ class GaussianModelConcatable:
             another_gaussian._scaling,
             another_gaussian._rotation
         )
-        self.mask = ~self.mask
+        # self.mask = ~self.mask
         # self.mask = torch.cat([self.mask, torch.ones_like(new_opacities[:, 0], dtype=torch.bool)], dim=0)
-        self.mask = torch.cat([self.mask, torch.ones_like(another_gaussian._opacity[:, 0], dtype=torch.bool)], dim=0)
-        self.remove_grad_mask()
-        self.apply_grad_mask(self.mask)
+        # self.mask = torch.cat([self.mask, torch.ones_like(another_gaussian._opacity[:, 0], dtype=torch.bool)], dim=0)
+        # self.remove_grad_mask()
+        # self.apply_grad_mask(self.mask)
 
         self._generation = torch.cat([self._generation, torch.zeros_like(another_gaussian._opacity[:, 0], dtype=torch.int64)], dim=0)
-        self.update_anchor()
+        # self.update_anchor()

@@ -4,9 +4,16 @@ from diffusers import AutoencoderKL, StableDiffusionImg2ImgPipeline
 from torchvision import transforms
 
 # vae = AutoencoderKL.from_pretrained("stabilityai/stable-diffusion-2-1", subfolder="vae", revision=None).to('cuda')
-# diffusion_pipeline = StableDiffusionImg2ImgPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", torch_dtype=torch.float32)
-diffusion_pipeline = StableDiffusionImg2ImgPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", torch_dtype=torch.float16)
-diffusion_pipeline.enable_sequential_cpu_offload()
+# diffusion_pipeline = StableDiffusionImg2ImgPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", torch_dtype=torch.float16).to('cuda:1')
+diffusion_pipeline = StableDiffusionImg2ImgPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", torch_dtype=torch.float32)
+# diffusion_pipeline.enable_sequential_cpu_offload()
+
+def debug_loss(img):
+    y = torch.rand_like(img)
+    loss = mse_loss(y, img)
+    del y
+    torch.cuda.empty_cache()
+    return loss
 
 def vae_reconstrucion_loss(img):
     encoding_transforms = transforms.Compose(

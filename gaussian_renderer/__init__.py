@@ -138,6 +138,7 @@ def render(
         rotations=rotations.float(),
         cov3D_precomp=cov3D_precomp,
     )
+    del shs
     # rendered_image, radii, depth = rasterizer(
     #     means3D=means3D.float(),
     #     means2D=means2D.float(),

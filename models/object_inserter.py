@@ -38,4 +38,3 @@ class ObjectInserter(nn.Module):
 
     def reset_fg_gaussian(self):
         self.curr_fg_gaussian = GaussianModelConcatable.from_other_gaussian(self.original_fg_gaussian)
-        self.curr_fg_gaussian.training_setup(self.training_params)

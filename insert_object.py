@@ -1,3 +1,5 @@
+import gc
+
 import torch
 from torch.utils.data import DataLoader
 from torch.optim import Adam
@@ -49,9 +51,25 @@ def get_params(gaussians_path):
         "iteration": args.iteration
     }
  
+def get_cuda_tensors():
+    tensors = []
+    for obj in gc.get_objects():
+        try:
+            if (torch.is_tensor(obj) or (hasattr(obj, 'data') and torch.is_tensor(obj.data))) and 'cpu':
+                tensors.append(obj)
+        except:
+            pass
+    return tensors
+
+def disable_grads(gaussians):
+    for attr_name in dir(gaussians):
+        attr = getattr(gaussians, attr_name)
+        if torch.is_tensor(attr) and attr.requires_grad:
+            attr.requires_grad = False
+
 
 def main():
-    # with torch.cuda.device(1):
+    # with torch.cuda.device(0):
     params = get_params(BG_SCENE_PATH)
     fg_gaussians = GaussianModelConcatable(
                 sh_degree=0,
@@ -62,6 +80,8 @@ def main():
     fg_gaussians.load_ply(FG_GAUSSIANS_PATH)
     bg_gaussians = VanillaGaussianModel(fg_gaussians.max_sh_degree)
     bg_gaussians.load_ply(BG_GAUSSIANS_PATH)
+
+    disable_grads(fg_gaussians)
 
     scene_views_dataset = SceneViewsDataset(params["dataset_params"], params["iteration"])
     dataloader = DataLoader(scene_views_dataset, batch_size=None, shuffle=False)
@@ -75,10 +95,12 @@ def main():
         optimizer.zero_grad()
         rendering = object_inserter(view)
         # loss = losses.vae_reconstrucion_loss(rendering)
-        loss = losses.diffusion_reconstruction_loss(rendering.to('cuda'))
-        # loss = losses.diffusion_reconstruction_loss(rendering.to('cpu'))
+        # loss = losses.diffusion_reconstruction_loss(rendering.to('cuda:1'))
+        loss = losses.diffusion_reconstruction_loss(rendering.to('cpu'))
+        # loss = losses.debug_loss(rendering)
         loss.backward()
         optimizer.step()
+        torch.cuda.empty_cache()
 
 if __name__ == "__main__":
     main()
