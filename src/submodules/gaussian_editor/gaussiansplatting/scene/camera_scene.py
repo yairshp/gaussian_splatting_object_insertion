@@ -10,8 +10,8 @@
 #
 
 import os
-from gaussiansplatting.scene.dataset_readers import sceneLoadTypeCallbacks
-from gaussiansplatting.utils.camera_utils import cameraList_load
+from submodules.gaussian_editor.gaussiansplatting.scene.dataset_readers import sceneLoadTypeCallbacks
+from submodules.gaussian_editor.gaussiansplatting.utils.camera_utils import cameraList_load
 
 
 class CamScene:

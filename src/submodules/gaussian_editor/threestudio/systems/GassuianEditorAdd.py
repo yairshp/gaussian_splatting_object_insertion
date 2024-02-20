@@ -10,12 +10,12 @@ from pathlib import Path
 import subprocess
 import rembg
 
-from gaussiansplatting.gaussian_renderer import render
-from gaussiansplatting.scene import GaussianModel
-from gaussiansplatting.scene.vanilla_gaussian_model import (
+from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import render
+from submodules.gaussian_editor.gaussiansplatting.scene import GaussianModel
+from submodules.gaussian_editor.gaussiansplatting.scene.vanilla_gaussian_model import (
     GaussianModel as VanillaGaussianModel,
 )
-from gaussiansplatting.utils.graphics_utils import fov2focal
+from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import fov2focal
 
 from threestudio.utils.misc import get_device
 from threestudio.utils.perceptual import PerceptualLoss

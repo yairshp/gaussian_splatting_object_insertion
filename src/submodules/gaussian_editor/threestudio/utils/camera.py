@@ -1,7 +1,7 @@
 import torch
 
-from gaussiansplatting.utils.graphics_utils import fov2focal
-from gaussiansplatting.scene.cameras import Simple_Camera
+from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import fov2focal
+from submodules.gaussian_editor.gaussiansplatting.scene.cameras import Simple_Camera
 import torch.nn.functional as F
 from threestudio.utils.typing import *
 

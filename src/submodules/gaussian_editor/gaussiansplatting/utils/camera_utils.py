@@ -9,10 +9,10 @@
 # For inquiries contact  george.drettakis@inria.fr
 #
 
-from gaussiansplatting.scene.cameras import Camera, Simple_Camera
+from submodules.gaussian_editor.gaussiansplatting.scene.cameras import Camera, Simple_Camera
 import numpy as np
-from gaussiansplatting.utils.general_utils import PILtoTorch
-from gaussiansplatting.utils.graphics_utils import fov2focal
+from submodules.gaussian_editor.gaussiansplatting.utils.general_utils import PILtoTorch
+from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import fov2focal
 
 WARNED = False
 

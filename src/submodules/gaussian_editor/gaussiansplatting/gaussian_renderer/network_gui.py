@@ -13,7 +13,7 @@ import torch
 import traceback
 import socket
 import json
-from gaussiansplatting.scene.cameras import MiniCam
+from submodules.gaussian_editor.gaussiansplatting.scene.cameras import MiniCam
 
 host = "127.0.0.1"
 port = 6009

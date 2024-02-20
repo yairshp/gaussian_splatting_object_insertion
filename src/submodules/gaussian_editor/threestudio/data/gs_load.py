@@ -339,7 +339,7 @@ class GS_load(pl.LightningDataModule):
     cfg: GSLoadDataModuleConfig
 
     def __init__(self, cfg: Optional[Union[dict, DictConfig]] = None) -> None:
-        from gaussiansplatting.scene.camera_scene import CamScene
+        from submodules.gaussian_editor.gaussiansplatting.scene.camera_scene import CamScene
 
         super().__init__()
         self.cfg = parse_structured(GSLoadDataModuleConfig, cfg)

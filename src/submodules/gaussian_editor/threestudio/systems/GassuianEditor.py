@@ -12,10 +12,10 @@ import os
 from threestudio.systems.base import BaseLift3DSystem
 
 from threestudio.utils.typing import *
-from gaussiansplatting.gaussian_renderer import render
-from gaussiansplatting.scene import GaussianModel
+from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import render
+from submodules.gaussian_editor.gaussiansplatting.scene import GaussianModel
 
-from gaussiansplatting.arguments import (
+from submodules.gaussian_editor.gaussiansplatting.arguments import (
     PipelineParams,
     OptimizationParams,
 )

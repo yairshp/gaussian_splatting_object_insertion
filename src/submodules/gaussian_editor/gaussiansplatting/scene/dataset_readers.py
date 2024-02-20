@@ -13,15 +13,15 @@ import os
 import sys
 from PIL import Image
 from typing import NamedTuple
-from gaussiansplatting.scene.colmap_loader import read_extrinsics_text, read_intrinsics_text, qvec2rotmat, \
+from submodules.gaussian_editor.gaussiansplatting.scene.colmap_loader import read_extrinsics_text, read_intrinsics_text, qvec2rotmat, \
     read_extrinsics_binary, read_intrinsics_binary, read_points3D_binary, read_points3D_text
-from gaussiansplatting.utils.graphics_utils import getWorld2View2, focal2fov, fov2focal
+from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import getWorld2View2, focal2fov, fov2focal
 import numpy as np
 import json
 from pathlib import Path
 from plyfile import PlyData, PlyElement
-from gaussiansplatting.utils.sh_utils import SH2RGB
-from gaussiansplatting.scene.gaussian_model import BasicPointCloud
+from submodules.gaussian_editor.gaussiansplatting.utils.sh_utils import SH2RGB
+from submodules.gaussian_editor.gaussiansplatting.scene.gaussian_model import BasicPointCloud
 
 class CameraInfo(NamedTuple):
     uid: int

@@ -2,22 +2,22 @@ import os
 import numpy as np
 import torch
 from random import randint
-from gaussiansplatting.utils.loss_utils import l1_loss, ssim
-from gaussiansplatting.gaussian_renderer import render
+from submodules.gaussian_editor.gaussiansplatting.utils.loss_utils import l1_loss, ssim
+from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import render
 import sys
 from threestudio.utils.perceptual import PerceptualLoss
 
-# from gaussiansplatting.scene import Scene, GaussianModel
-from gaussiansplatting.scene.vanilla_gaussian_model import GaussianModel as Vanilla_GaussianModel
-from gaussiansplatting.scene.gaussian_model import GaussianModel
+# from submodules.gaussian_editor.gaussiansplatting.scene import Scene, GaussianModel
+from submodules.gaussian_editor.gaussiansplatting.scene.vanilla_gaussian_model import GaussianModel as Vanilla_GaussianModel
+from submodules.gaussian_editor.gaussiansplatting.scene.gaussian_model import GaussianModel
 
-from gaussiansplatting.utils.general_utils import safe_state
+from submodules.gaussian_editor.gaussiansplatting.utils.general_utils import safe_state
 import uuid
 from tqdm import tqdm, trange
-from gaussiansplatting.utils.image_utils import psnr
+from submodules.gaussian_editor.gaussiansplatting.utils.image_utils import psnr
 from argparse import ArgumentParser, Namespace
-from gaussiansplatting.arguments import ModelParams, PipelineParams, OptimizationParams
-from gaussiansplatting.utils.graphics_utils import BasicPointCloud
+from submodules.gaussian_editor.gaussiansplatting.arguments import ModelParams, PipelineParams, OptimizationParams
+from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import BasicPointCloud
 from mediapy import write_image
 
 from threestudio.utils.render import render_multiview_images_from_mesh

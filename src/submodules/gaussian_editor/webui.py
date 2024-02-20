@@ -3,11 +3,11 @@ import numpy as np
 import torch
 import torchvision
 import rembg
-from gaussiansplatting.scene.colmap_loader import qvec2rotmat
-from gaussiansplatting.scene.cameras import Simple_Camera
+from submodules.gaussian_editor.gaussiansplatting.scene.colmap_loader import qvec2rotmat
+from submodules.gaussian_editor.gaussiansplatting.scene.cameras import Simple_Camera
 from threestudio.utils.dpt import DPT
 from torchvision.ops import masks_to_boxes
-from gaussiansplatting.utils.graphics_utils import fov2focal
+from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import fov2focal
 
 import viser
 import viser.transforms as tf
@@ -36,22 +36,22 @@ from kornia.geometry.quaternion import Quaternion
 # from threestudio.utils.ops import binary_cross_entropy
 from threestudio.utils.typing import *
 from threestudio.utils.transform import rotate_gaussians
-from gaussiansplatting.gaussian_renderer import render, point_cloud_render
-from gaussiansplatting.scene import GaussianModel
+from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import render, point_cloud_render
+from submodules.gaussian_editor.gaussiansplatting.scene import GaussianModel
 
-from gaussiansplatting.scene.vanilla_gaussian_model import (
+from submodules.gaussian_editor.gaussiansplatting.scene.vanilla_gaussian_model import (
     GaussianModel as VanillaGaussianModel,
 )
 
-# from gaussiansplatting.utils.graphics_utils import fov2focal
-from gaussiansplatting.arguments import (
+# from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import fov2focal
+from submodules.gaussian_editor.gaussiansplatting.arguments import (
     PipelineParams,
     OptimizationParams,
 )
 from omegaconf import OmegaConf
 
-# from gaussiansplatting.utils.general_utils import inverse_sigmoid
-# from gaussiansplatting.gaussian_renderer import camera2rasterizer
+# from submodules.gaussian_editor.gaussiansplatting.utils.general_utils import inverse_sigmoid
+# from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import camera2rasterizer
 from argparse import ArgumentParser
 from threestudio.utils.misc import (
     get_device,
@@ -65,7 +65,7 @@ from threestudio.utils.camera import camera_ray_sample_points, project, unprojec
 
 # from threestudio.utils.dpt import DPT
 # from threestudio.utils.config import parse_structured
-from gaussiansplatting.scene.camera_scene import CamScene
+from submodules.gaussian_editor.gaussiansplatting.scene.camera_scene import CamScene
 import math
 from GUI.EditGuidance import EditGuidance
 from GUI.DelGuidance import DelGuidance

@@ -7,7 +7,7 @@ import trimesh
 import pyrender
 from mediapy import write_image, write_video
 
-from gaussiansplatting.scene.cameras import Camera, Simple_Camera, C2W_Camera
+from submodules.gaussian_editor.gaussiansplatting.scene.cameras import Camera, Simple_Camera, C2W_Camera
 
 os.environ["PYOPENGL_PLATFORM"] = "egl"
 

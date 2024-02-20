@@ -13,25 +13,25 @@
 import torch
 import torch.nn.functional as F
 import numpy as np
-from gaussiansplatting.utils.general_utils import (
+from submodules.gaussian_editor.gaussiansplatting.utils.general_utils import (
     inverse_sigmoid,
     get_expon_lr_func,
     build_rotation,
 )
 from torch import nn
 import os
-from gaussiansplatting.utils.system_utils import mkdir_p
+from submodules.gaussian_editor.gaussiansplatting.utils.system_utils import mkdir_p
 from plyfile import PlyData, PlyElement
-from gaussiansplatting.utils.sh_utils import RGB2SH
+from submodules.gaussian_editor.gaussiansplatting.utils.sh_utils import RGB2SH
 from simple_knn._C import distCUDA2
-from gaussiansplatting.utils.graphics_utils import BasicPointCloud
-from gaussiansplatting.utils.general_utils import (
+from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import BasicPointCloud
+from submodules.gaussian_editor.gaussiansplatting.utils.general_utils import (
     strip_symmetric,
     build_scaling_rotation,
 )
-from gaussiansplatting.gaussian_renderer import camera2rasterizer
+from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import camera2rasterizer
 
-from gaussiansplatting.knn import K_nearest_neighbors
+from submodules.gaussian_editor.gaussiansplatting.knn import K_nearest_neighbors
 # from threestudio.utils.typing import Bool, Tensor
 
 MAX_ANCHOR_WEIGHT = 10

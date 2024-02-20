@@ -15,7 +15,7 @@ from diff_gaussian_rasterization import (
     GaussianRasterizationSettings,
     GaussianRasterizer,
 )
-from gaussiansplatting.utils.sh_utils import eval_sh
+from submodules.gaussian_editor.gaussiansplatting.utils.sh_utils import eval_sh
 
 
 def camera2rasterizer(viewpoint_camera, bg_color: torch.Tensor, sh_degree: int = 0):
@@ -150,7 +150,7 @@ def render(
     }
 
 
-# from gaussiansplatting.scene.gaussian_model import GaussianModel
+# from submodules.gaussian_editor.gaussiansplatting.scene.gaussian_model import GaussianModel
 
 
 def point_cloud_render(

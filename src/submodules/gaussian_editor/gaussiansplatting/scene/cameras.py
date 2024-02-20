@@ -12,7 +12,7 @@
 import torch
 from torch import nn
 import numpy as np
-from gaussiansplatting.utils.graphics_utils import getWorld2View2, getProjectionMatrix, focal2fov, fov2focal,getWorld2View2_tensor
+from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import getWorld2View2, getProjectionMatrix, focal2fov, fov2focal,getWorld2View2_tensor
 
 class Camera(nn.Module):
     def __init__(self, colmap_id, R, T, FoVx, FoVy, image, gt_alpha_mask,

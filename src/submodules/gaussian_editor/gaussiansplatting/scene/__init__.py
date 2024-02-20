@@ -12,12 +12,12 @@
 import os
 import random
 import json
-from gaussiansplatting.utils.system_utils import searchForMaxIteration
-from gaussiansplatting.scene.dataset_readers import sceneLoadTypeCallbacks
-from gaussiansplatting.scene.gaussian_model import GaussianModel
-from gaussiansplatting.scene.hier_gaussian_model import HierarchicalGaussianModel
-from gaussiansplatting.arguments import ModelParams
-from gaussiansplatting.utils.camera_utils import cameraList_from_camInfos, camera_to_JSON
+from submodules.gaussian_editor.gaussiansplatting.utils.system_utils import searchForMaxIteration
+from submodules.gaussian_editor.gaussiansplatting.scene.dataset_readers import sceneLoadTypeCallbacks
+from submodules.gaussian_editor.gaussiansplatting.scene.gaussian_model import GaussianModel
+from submodules.gaussian_editor.gaussiansplatting.scene.hier_gaussian_model import HierarchicalGaussianModel
+from submodules.gaussian_editor.gaussiansplatting.arguments import ModelParams
+from submodules.gaussian_editor.gaussiansplatting.utils.camera_utils import cameraList_from_camInfos, camera_to_JSON
 
 class Scene:
     gaussians : GaussianModel

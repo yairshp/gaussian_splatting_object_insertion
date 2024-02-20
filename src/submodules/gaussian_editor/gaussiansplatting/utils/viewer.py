@@ -7,8 +7,8 @@ import viser.transforms as tf
 from omegaconf import OmegaConf
 from collections import deque
 
-from gaussiansplatting.scene.cameras import Simple_Camera, C2W_Camera
-from gaussiansplatting.gaussian_renderer import render
+from submodules.gaussian_editor.gaussiansplatting.scene.cameras import Simple_Camera, C2W_Camera
+from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import render
 
 
 def qvec2rotmat(qvec):
