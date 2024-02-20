@@ -71,17 +71,17 @@ def main(args, extras) -> None:
 
         install_import_hook("threestudio", "typeguard.typechecked")
 
-    import threestudio
-    from threestudio.systems.base import BaseSystem
-    from threestudio.utils.callbacks import (
+    import submodules.gaussian_editor.threestudio as threestudio
+    from submodules.gaussian_editor.threestudio.systems.base import BaseSystem
+    from submodules.gaussian_editor.threestudio.utils.callbacks import (
         CodeSnapshotCallback,
         ConfigSnapshotCallback,
         CustomProgressBar,
         ProgressCallback,
     )
-    from threestudio.utils.config import ExperimentConfig, load_config
-    from threestudio.utils.misc import get_rank
-    from threestudio.utils.typing import Optional
+    from submodules.gaussian_editor.threestudio.utils.config import ExperimentConfig, load_config
+    from submodules.gaussian_editor.threestudio.utils.misc import get_rank
+    from submodules.gaussian_editor.threestudio.utils.typing import Optional
 
     logger = logging.getLogger("pytorch_lightning")
     if args.verbose:

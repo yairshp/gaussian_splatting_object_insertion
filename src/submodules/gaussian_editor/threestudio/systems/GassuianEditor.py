@@ -7,11 +7,11 @@ import numpy as np
 import sys
 import shutil
 import torch
-import threestudio
+import submodules.gaussian_editor.threestudio as threestudio
 import os
-from threestudio.systems.base import BaseLift3DSystem
+from submodules.gaussian_editor.threestudio.systems.base import BaseLift3DSystem
 
-from threestudio.utils.typing import *
+from submodules.gaussian_editor.threestudio.utils.typing import *
 from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import render
 from submodules.gaussian_editor.gaussiansplatting.scene import GaussianModel
 
@@ -22,9 +22,9 @@ from submodules.gaussian_editor.gaussiansplatting.arguments import (
 from omegaconf import OmegaConf
 
 from argparse import ArgumentParser
-from threestudio.utils.misc import get_device
-from threestudio.utils.perceptual import PerceptualLoss
-from threestudio.utils.sam import LangSAMTextSegmentor
+from submodules.gaussian_editor.threestudio.utils.misc import get_device
+from submodules.gaussian_editor.threestudio.utils.perceptual import PerceptualLoss
+from submodules.gaussian_editor.threestudio.utils.sam import LangSAMTextSegmentor
 
 
 class GaussianEditor(BaseLift3DSystem):

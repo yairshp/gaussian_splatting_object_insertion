@@ -9,11 +9,11 @@ import torch.nn.functional as F
 from pytorch_lightning.utilities.rank_zero import rank_zero_only
 from transformers import AutoTokenizer, BertForMaskedLM
 
-import threestudio
-from threestudio.utils.base import BaseObject
-from threestudio.utils.misc import barrier, cleanup, get_rank
-from threestudio.utils.ops import shifted_cosine_decay, shifted_expotional_decay
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.utils.base import BaseObject
+from submodules.gaussian_editor.threestudio.utils.misc import barrier, cleanup, get_rank
+from submodules.gaussian_editor.threestudio.utils.ops import shifted_cosine_decay, shifted_expotional_decay
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 def hash_prompt(model: str, prompt: str) -> str:

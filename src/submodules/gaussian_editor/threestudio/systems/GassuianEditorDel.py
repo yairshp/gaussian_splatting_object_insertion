@@ -4,11 +4,11 @@ from tqdm import tqdm
 import cv2
 import numpy as np
 import torch
-import threestudio
+import submodules.gaussian_editor.threestudio as threestudio
 import os
 
-from threestudio.utils.misc import dilate_mask, fill_closed_areas
-from threestudio.systems.GassuianEditor import GaussianEditor
+from submodules.gaussian_editor.threestudio.utils.misc import dilate_mask, fill_closed_areas
+from submodules.gaussian_editor.threestudio.systems.GassuianEditor import GaussianEditor
 
 
 @threestudio.register("gsedit-system-del")

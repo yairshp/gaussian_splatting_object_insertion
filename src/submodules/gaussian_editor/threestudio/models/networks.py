@@ -5,12 +5,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import threestudio
-from threestudio.utils.base import Updateable
-from threestudio.utils.config import config_to_primitive
-from threestudio.utils.misc import get_rank
-from threestudio.utils.ops import get_activation
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.utils.base import Updateable
+from submodules.gaussian_editor.threestudio.utils.config import config_to_primitive
+from submodules.gaussian_editor.threestudio.utils.misc import get_rank
+from submodules.gaussian_editor.threestudio.utils.ops import get_activation
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 class ProgressiveBandFrequency(nn.Module, Updateable):

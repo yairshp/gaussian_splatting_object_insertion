@@ -4,9 +4,9 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-import threestudio
-from threestudio.utils.ops import dot
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.utils.ops import dot
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 class Mesh:

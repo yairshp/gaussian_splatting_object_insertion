@@ -8,7 +8,7 @@ from torchvision.transforms import ToPILImage, ToTensor
 
 from lang_sam import LangSAM
 
-# from threestudio.utils.typing import *
+# from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 class LangSAMTextSegmentor(torch.nn.Module):

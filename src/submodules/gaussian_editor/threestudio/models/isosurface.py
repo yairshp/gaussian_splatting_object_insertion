@@ -3,9 +3,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import threestudio
-from threestudio.models.mesh import Mesh
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.models.mesh import Mesh
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 class IsosurfaceHelper(nn.Module):

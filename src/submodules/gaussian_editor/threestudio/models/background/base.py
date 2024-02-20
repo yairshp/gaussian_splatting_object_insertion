@@ -5,9 +5,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import threestudio
-from threestudio.utils.base import BaseModule
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.utils.base import BaseModule
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 class BaseBackground(BaseModule):

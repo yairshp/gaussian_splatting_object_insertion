@@ -8,11 +8,11 @@ from diffusers import DDIMScheduler, StableDiffusionInstructPix2PixPipeline
 from diffusers.utils.import_utils import is_xformers_available
 from tqdm import tqdm
 
-import threestudio
-from threestudio.models.prompt_processors.base import PromptProcessorOutput
-from threestudio.utils.base import BaseObject
-from threestudio.utils.misc import C, parse_version
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.models.prompt_processors.base import PromptProcessorOutput
+from submodules.gaussian_editor.threestudio.utils.base import BaseObject
+from submodules.gaussian_editor.threestudio.utils.misc import C, parse_version
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 @threestudio.register("stable-diffusion-instructpix2pix-guidance")
@@ -316,8 +316,8 @@ class InstructPix2PixGuidance(BaseObject):
 
 
 if __name__ == "__main__":
-    from threestudio.utils.config import ExperimentConfig, load_config
-    from threestudio.utils.typing import Optional
+    from submodules.gaussian_editor.threestudio.utils.config import ExperimentConfig, load_config
+    from submodules.gaussian_editor.threestudio.utils.typing import Optional
 
     cfg = load_config("configs/debugging/instructpix2pix.yaml")
     guidance = threestudio.find(cfg.system.guidance_type)(cfg.system.guidance)

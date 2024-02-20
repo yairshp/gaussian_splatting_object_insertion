@@ -8,8 +8,8 @@ from igl import fast_winding_number_for_meshes, point_mesh_squared_distance, rea
 from torch.autograd import Function
 from torch.cuda.amp import custom_bwd, custom_fwd
 
-import threestudio
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 def dot(x, y):

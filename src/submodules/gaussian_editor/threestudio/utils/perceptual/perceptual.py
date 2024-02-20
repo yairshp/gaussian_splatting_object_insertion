@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from torchvision import models
 
-from threestudio.utils.perceptual.utils import get_ckpt_path
+from submodules.gaussian_editor.threestudio.utils.perceptual.utils import get_ckpt_path
 
 
 class PerceptualLoss(nn.Module):

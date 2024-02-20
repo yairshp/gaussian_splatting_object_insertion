@@ -4,18 +4,18 @@ from dataclasses import dataclass, field
 import pytorch_lightning as pl
 import torch.nn.functional as F
 
-import threestudio
-from threestudio.models.exporters.base import Exporter, ExporterOutput
-from threestudio.systems.utils import parse_optimizer, parse_scheduler
-from threestudio.utils.base import (
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.models.exporters.base import Exporter, ExporterOutput
+from submodules.gaussian_editor.threestudio.systems.utils import parse_optimizer, parse_scheduler
+from submodules.gaussian_editor.threestudio.utils.base import (
     Updateable,
     update_end_if_possible,
     update_if_possible,
 )
-from threestudio.utils.config import parse_structured
-from threestudio.utils.misc import C, cleanup, get_device, load_module_weights
-from threestudio.utils.saving import SaverMixin
-from threestudio.utils.typing import *
+from submodules.gaussian_editor.threestudio.utils.config import parse_structured
+from submodules.gaussian_editor.threestudio.utils.misc import C, cleanup, get_device, load_module_weights
+from submodules.gaussian_editor.threestudio.utils.saving import SaverMixin
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 class BaseSystem(pl.LightningModule, Updateable, SaverMixin):
     @dataclass
@@ -246,7 +246,7 @@ class BaseLift3DSystem(BaseSystem):
             and not self.resumed  # not initialized from coarse when resumed from checkpoints
         ):
             threestudio.info("Initializing geometry from a given checkpoint ...")
-            from threestudio.utils.config import load_config, parse_structured
+            from submodules.gaussian_editor.threestudio.utils.config import load_config, parse_structured
 
             prev_cfg = load_config(
                 os.path.join(

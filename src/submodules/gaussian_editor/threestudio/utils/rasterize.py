@@ -1,7 +1,7 @@
 import nvdiffrast.torch as dr
 import torch
 
-from threestudio.utils.typing import *
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 class NVDiffRasterizerContext:

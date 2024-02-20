@@ -4,8 +4,8 @@ import subprocess
 
 import pytorch_lightning
 
-from threestudio.utils.config import dump_config
-from threestudio.utils.misc import parse_version
+from submodules.gaussian_editor.threestudio.utils.config import dump_config
+from submodules.gaussian_editor.threestudio.utils.misc import parse_version
 
 if parse_version(pytorch_lightning.__version__) > parse_version("1.8"):
     from pytorch_lightning.callbacks import Callback

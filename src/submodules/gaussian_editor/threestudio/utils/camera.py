@@ -3,7 +3,7 @@ import torch
 from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import fov2focal
 from submodules.gaussian_editor.gaussiansplatting.scene.cameras import Simple_Camera
 import torch.nn.functional as F
-from threestudio.utils.typing import *
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 def camera_ray_sample_points(

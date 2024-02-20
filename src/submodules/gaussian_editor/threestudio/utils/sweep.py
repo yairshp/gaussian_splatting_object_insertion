@@ -10,9 +10,9 @@ from pathlib import Path
 from itertools import product
 from copy import deepcopy
 
-import threestudio
-from threestudio.utils.config import config_to_primitive
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.utils.config import config_to_primitive
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 def find_available_gpus(minial_free_memory=7.0, devices=None):

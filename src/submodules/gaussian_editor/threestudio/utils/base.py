@@ -3,9 +3,9 @@ from dataclasses import dataclass
 import torch
 import torch.nn as nn
 
-from threestudio.utils.config import parse_structured
-from threestudio.utils.misc import get_device, load_module_weights
-from threestudio.utils.typing import *
+from submodules.gaussian_editor.threestudio.utils.config import parse_structured
+from submodules.gaussian_editor.threestudio.utils.misc import get_device, load_module_weights
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 class Configurable:

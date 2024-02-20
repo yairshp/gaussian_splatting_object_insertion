@@ -15,8 +15,8 @@ from matplotlib.colors import LinearSegmentedColormap
 from PIL import Image, ImageDraw
 from pytorch_lightning.loggers import WandbLogger
 
-from threestudio.models.mesh import Mesh
-from threestudio.utils.typing import *
+from submodules.gaussian_editor.threestudio.models.mesh import Mesh
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 class SaverMixin:

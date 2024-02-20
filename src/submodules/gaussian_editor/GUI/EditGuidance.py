@@ -1,9 +1,9 @@
 import torch
 
-from threestudio.utils.misc import get_device, step_check, dilate_mask, erode_mask, fill_closed_areas
-from threestudio.utils.perceptual import PerceptualLoss
+from submodules.gaussian_editor.threestudio.utils.misc import get_device, step_check, dilate_mask, erode_mask, fill_closed_areas
+from submodules.gaussian_editor.threestudio.utils.perceptual import PerceptualLoss
 import ui_utils
-from threestudio.models.prompt_processors.stable_diffusion_prompt_processor import StableDiffusionPromptProcessor
+from submodules.gaussian_editor.threestudio.models.prompt_processors.stable_diffusion_prompt_processor import StableDiffusionPromptProcessor
 
 
 # Diffusion model (cached) + prompts + edited_frames + training config

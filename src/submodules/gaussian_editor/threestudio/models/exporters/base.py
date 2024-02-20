@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-import threestudio
-from threestudio.models.background.base import BaseBackground
-from threestudio.utils.base import BaseObject
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.models.background.base import BaseBackground
+from submodules.gaussian_editor.threestudio.utils.base import BaseObject
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 @dataclass

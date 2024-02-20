@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from torch.optim import lr_scheduler
 
-import threestudio
+import submodules.gaussian_editor.threestudio as threestudio
 
 
 def get_scheduler(name):
@@ -45,7 +45,7 @@ def parse_optimizer(config, model):
 
         optim = getattr(apex.optimizers, config.name)(params, **config.args)
     elif config.name in ["Adan"]:
-        from threestudio.systems import optimizers
+        from submodules.gaussian_editor.threestudio.systems import optimizers
 
         optim = getattr(optimizers, config.name)(params, **config.args)
     else:

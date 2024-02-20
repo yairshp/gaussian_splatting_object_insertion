@@ -6,8 +6,8 @@ import tinycudann as tcnn
 import torch
 from packaging import version
 
-from threestudio.utils.config import config_to_primitive
-from threestudio.utils.typing import *
+from submodules.gaussian_editor.threestudio.utils.config import config_to_primitive
+from submodules.gaussian_editor.threestudio.utils.typing import *
 import torch.nn.functional as F
 import cv2
 import numpy as np

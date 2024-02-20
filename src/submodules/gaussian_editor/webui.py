@@ -5,7 +5,7 @@ import torchvision
 import rembg
 from submodules.gaussian_editor.gaussiansplatting.scene.colmap_loader import qvec2rotmat
 from submodules.gaussian_editor.gaussiansplatting.scene.cameras import Simple_Camera
-from threestudio.utils.dpt import DPT
+from submodules.gaussian_editor.threestudio.utils.dpt import DPT
 from torchvision.ops import masks_to_boxes
 from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import fov2focal
 
@@ -24,18 +24,18 @@ import torch
 from torchvision.transforms.functional import to_pil_image, to_tensor
 from kornia.geometry.quaternion import Quaternion
 
-# import threestudio
+# import submodules.gaussian_editor.threestudio as threestudio
 # import os
-# from threestudio.systems.base import BaseLift3DSystem
+# from submodules.gaussian_editor.threestudio.systems.base import BaseLift3DSystem
 # from pathlib import Path
 # import subprocess
 # import rembg
-# from threestudio.utils.clip_metrics import ClipSimilarity
+# from submodules.gaussian_editor.threestudio.utils.clip_metrics import ClipSimilarity
 
-# from threestudio.utils.lama import InpaintModel
-# from threestudio.utils.ops import binary_cross_entropy
-from threestudio.utils.typing import *
-from threestudio.utils.transform import rotate_gaussians
+# from submodules.gaussian_editor.threestudio.utils.lama import InpaintModel
+# from submodules.gaussian_editor.threestudio.utils.ops import binary_cross_entropy
+from submodules.gaussian_editor.threestudio.utils.typing import *
+from submodules.gaussian_editor.threestudio.utils.transform import rotate_gaussians
 from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import render, point_cloud_render
 from submodules.gaussian_editor.gaussiansplatting.scene import GaussianModel
 
@@ -53,18 +53,18 @@ from omegaconf import OmegaConf
 # from submodules.gaussian_editor.gaussiansplatting.utils.general_utils import inverse_sigmoid
 # from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import camera2rasterizer
 from argparse import ArgumentParser
-from threestudio.utils.misc import (
+from submodules.gaussian_editor.threestudio.utils.misc import (
     get_device,
     step_check,
     dilate_mask,
     erode_mask,
     fill_closed_areas,
 )
-from threestudio.utils.sam import LangSAMTextSegmentor
-from threestudio.utils.camera import camera_ray_sample_points, project, unproject
+from submodules.gaussian_editor.threestudio.utils.sam import LangSAMTextSegmentor
+from submodules.gaussian_editor.threestudio.utils.camera import camera_ray_sample_points, project, unproject
 
-# from threestudio.utils.dpt import DPT
-# from threestudio.utils.config import parse_structured
+# from submodules.gaussian_editor.threestudio.utils.dpt import DPT
+# from submodules.gaussian_editor.threestudio.utils.config import parse_structured
 from submodules.gaussian_editor.gaussiansplatting.scene.camera_scene import CamScene
 import math
 from GUI.EditGuidance import EditGuidance
@@ -78,7 +78,7 @@ import ui_utils
 import datetime
 import subprocess
 from pathlib import Path
-from threestudio.utils.transform import (
+from submodules.gaussian_editor.threestudio.utils.transform import (
     rotate_gaussians,
     translate_gaussians,
     scale_gaussians,
@@ -1129,7 +1129,7 @@ class WebUI:
     def edit(self, edit_cameras, train_frames, train_frustums):
         if self.guidance_type.value == "InstructPix2Pix":
             if not self.ip2p:
-                from threestudio.models.guidance.instructpix2pix_guidance import (
+                from submodules.gaussian_editor.threestudio.models.guidance.instructpix2pix_guidance import (
                     InstructPix2PixGuidance,
                 )
 
@@ -1140,7 +1140,7 @@ class WebUI:
             print("using InstructPix2Pix!")
         elif self.guidance_type.value == "ControlNet-Pix2Pix":
             if not self.ctn_ip2p:
-                from threestudio.models.guidance.controlnet_guidance import (
+                from submodules.gaussian_editor.threestudio.models.guidance.controlnet_guidance import (
                     ControlNetGuidance,
                 )
 

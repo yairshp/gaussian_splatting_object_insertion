@@ -6,10 +6,10 @@ import torch
 import torch.nn as nn
 from transformers import AutoTokenizer, CLIPTextModel
 
-import threestudio
-from threestudio.models.prompt_processors.base import PromptProcessor, hash_prompt
-from threestudio.utils.misc import cleanup
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.models.prompt_processors.base import PromptProcessor, hash_prompt
+from submodules.gaussian_editor.threestudio.utils.misc import cleanup
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 @threestudio.register("stable-diffusion-prompt-processor")

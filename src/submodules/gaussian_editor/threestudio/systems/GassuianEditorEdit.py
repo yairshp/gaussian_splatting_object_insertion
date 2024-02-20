@@ -3,12 +3,12 @@ from dataclasses import dataclass, field
 from tqdm import tqdm
 
 import torch
-import threestudio
+import submodules.gaussian_editor.threestudio as threestudio
 import os
 
-from threestudio.utils.clip_metrics import ClipSimilarity
+from submodules.gaussian_editor.threestudio.utils.clip_metrics import ClipSimilarity
 
-from threestudio.systems.GassuianEditor import GaussianEditor
+from submodules.gaussian_editor.threestudio.systems.GassuianEditor import GaussianEditor
 
 @threestudio.register("gsedit-system-edit")
 class GaussianEditor_Edit(GaussianEditor):

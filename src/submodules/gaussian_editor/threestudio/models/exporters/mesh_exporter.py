@@ -4,12 +4,12 @@ import cv2
 import numpy as np
 import torch
 
-import threestudio
-from threestudio.models.background.base import BaseBackground
-from threestudio.models.exporters.base import Exporter, ExporterOutput
-from threestudio.models.mesh import Mesh
-from threestudio.utils.rasterize import NVDiffRasterizerContext
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.models.background.base import BaseBackground
+from submodules.gaussian_editor.threestudio.models.exporters.base import Exporter, ExporterOutput
+from submodules.gaussian_editor.threestudio.models.mesh import Mesh
+from submodules.gaussian_editor.threestudio.utils.rasterize import NVDiffRasterizerContext
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 
 @threestudio.register("mesh-exporter")

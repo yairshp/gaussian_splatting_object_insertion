@@ -4,8 +4,8 @@ from datetime import datetime
 
 from omegaconf import OmegaConf
 
-import threestudio
-from threestudio.utils.typing import *
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio.utils.typing import *
 
 # ============ Register OmegaConf Recolvers ============= #
 OmegaConf.register_new_resolver(

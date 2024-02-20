@@ -6,12 +6,12 @@ import pytorch_lightning as pl
 import torch
 from torch.utils.data import DataLoader, Dataset, IterableDataset
 
-import threestudio
-from threestudio import register
-from threestudio.utils.base import Updateable
-from threestudio.utils.config import parse_structured
+import submodules.gaussian_editor.threestudio as threestudio
+from submodules.gaussian_editor.threestudio import register
+from submodules.gaussian_editor.threestudio.utils.base import Updateable
+from submodules.gaussian_editor.threestudio.utils.config import parse_structured
 
-from threestudio.utils.typing import *
+from submodules.gaussian_editor.threestudio.utils.typing import *
 import numpy as np
 
 

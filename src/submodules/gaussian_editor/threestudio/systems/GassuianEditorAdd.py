@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 import sys
 import torch
-import threestudio
+import submodules.gaussian_editor.threestudio as threestudio
 import os
 from pathlib import Path
 import subprocess
@@ -17,12 +17,12 @@ from submodules.gaussian_editor.gaussiansplatting.scene.vanilla_gaussian_model i
 )
 from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import fov2focal
 
-from threestudio.utils.misc import get_device
-from threestudio.utils.perceptual import PerceptualLoss
-from threestudio.utils.sam import LangSAMTextSegmentor
-from threestudio.utils.dpt import DPT
+from submodules.gaussian_editor.threestudio.utils.misc import get_device
+from submodules.gaussian_editor.threestudio.utils.perceptual import PerceptualLoss
+from submodules.gaussian_editor.threestudio.utils.sam import LangSAMTextSegmentor
+from submodules.gaussian_editor.threestudio.utils.dpt import DPT
 
-from threestudio.systems.GassuianEditor import GaussianEditor
+from submodules.gaussian_editor.threestudio.systems.GassuianEditor import GaussianEditor
 
 @threestudio.register("gsedit-system-add")
 class GaussianEditor_Add(GaussianEditor):
@@ -242,7 +242,7 @@ class GaussianEditor_Add(GaussianEditor):
                 torch.ones_like(new_object_gaussian._opacity.data) * 99.99
         )
 
-        from threestudio.utils.transform import (
+        from submodules.gaussian_editor.threestudio.utils.transform import (
             rotate_gaussians,
             translate_gaussians,
             scale_gaussians,

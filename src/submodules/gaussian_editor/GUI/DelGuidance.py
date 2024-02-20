@@ -2,12 +2,12 @@ import torch
 from tqdm import tqdm
 import numpy as np
 import ui_utils
-from threestudio.utils.misc import get_device, step_check, dilate_mask, erode_mask, fill_closed_areas
-from threestudio.utils.perceptual import PerceptualLoss
+from submodules.gaussian_editor.threestudio.utils.misc import get_device, step_check, dilate_mask, erode_mask, fill_closed_areas
+from submodules.gaussian_editor.threestudio.utils.perceptual import PerceptualLoss
 from torchvision.transforms.functional import to_pil_image
 from torchvision.transforms import ToTensor
 
-from threestudio.models.prompt_processors.stable_diffusion_prompt_processor import StableDiffusionPromptProcessor
+from submodules.gaussian_editor.threestudio.models.prompt_processors.stable_diffusion_prompt_processor import StableDiffusionPromptProcessor
 
 # Diffusion model (cached) + prompts + edited_frames + training config
 

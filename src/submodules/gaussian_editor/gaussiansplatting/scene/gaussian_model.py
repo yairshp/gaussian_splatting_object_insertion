@@ -33,7 +33,7 @@ from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import camer
 
 from submodules.gaussian_editor.gaussiansplatting.knn import K_nearest_neighbors
 
-# from threestudio.utils.typing import Bool, Tensor
+# from submodules.gaussian_editor.threestudio.utils.typing import Bool, Tensor
 
 MAX_ANCHOR_WEIGHT = 10
 

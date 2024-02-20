@@ -5,7 +5,7 @@ from random import randint
 from submodules.gaussian_editor.gaussiansplatting.utils.loss_utils import l1_loss, ssim
 from submodules.gaussian_editor.gaussiansplatting.gaussian_renderer import render
 import sys
-from threestudio.utils.perceptual import PerceptualLoss
+from submodules.gaussian_editor.threestudio.utils.perceptual import PerceptualLoss
 
 # from submodules.gaussian_editor.gaussiansplatting.scene import Scene, GaussianModel
 from submodules.gaussian_editor.gaussiansplatting.scene.vanilla_gaussian_model import GaussianModel as Vanilla_GaussianModel
@@ -20,10 +20,10 @@ from submodules.gaussian_editor.gaussiansplatting.arguments import ModelParams, 
 from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import BasicPointCloud
 from mediapy import write_image
 
-from threestudio.utils.render import render_multiview_images_from_mesh
-from threestudio.utils.mesh import load_mesh_as_pcd_trimesh
+from submodules.gaussian_editor.threestudio.utils.render import render_multiview_images_from_mesh
+from submodules.gaussian_editor.threestudio.utils.mesh import load_mesh_as_pcd_trimesh
 from omegaconf import OmegaConf
-from threestudio.models.prompt_processors.stable_diffusion_prompt_processor import StableDiffusionPromptProcessor
+from submodules.gaussian_editor.threestudio.models.prompt_processors.stable_diffusion_prompt_processor import StableDiffusionPromptProcessor
 
 
 def replace_filename(path, new_filename):
@@ -98,7 +98,7 @@ def training(
     prompt_utils_1024 = prompt_processor_1024()
 
     if "n2n" in args.guide:
-        from threestudio.models.guidance.instructpix2pix_guidance import InstructPix2PixGuidance
+        from submodules.gaussian_editor.threestudio.models.guidance.instructpix2pix_guidance import InstructPix2PixGuidance
         pix2pix = InstructPix2PixGuidance(OmegaConf.create(
             {
                 "min_step_percent": 0.02,
