@@ -178,8 +178,8 @@ def place_object_in_bg(
     object_bbox: torch.Tensor,
     depth_estimator: DPT,
     object_on_bg_arr: torch.Tensor,
+    bg_color: torch.Tensor,
 ):
-    bg_color = torch.tensor([1, 1, 1], dtype=torch.float32, device="cuda")
     rendered_depth, bg_estimated_depth, object_estimated_depth = get_depths(
         bg_gaussians,
         cam,
@@ -220,6 +220,10 @@ def get_cams(bg_gaussians, bg_dataset_params, iteration, main_cam_id, second_cam
     return main_cam, second_cam
 
 
+def get_view_score(rendered_img):
+    pass
+
+
 def main():
     config = get_config("src/config.yml")
 
@@ -249,6 +253,8 @@ def main():
         config["resolution"]["height"],
     )
 
+    render_bg_color = torch.tensor([1, 1, 1], dtype=torch.float32, device="cuda")
+
     for depth_scale in range(
         config["depth_scale"]["start"],
         config["depth_scale"]["end"],
@@ -266,6 +272,14 @@ def main():
             depth_estimator,
             object_on_bg_arr,
         )
+
+        second_view_render_pkg = render(
+            second_cam,
+            bg_gaussians,
+            bg_gaussians_params["pipeline_params"],
+            render_bg_color,
+        )
+        score = get_view_score(second_view_render_pkg["render"])
 
 
 if __name__ == "__main__":
