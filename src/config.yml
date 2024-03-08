@@ -1,0 +1,15 @@
+bg_scene_path: "/root/projects/insert_object/data/garden/output"
+bg_gaussians_path: "/root/projects/insert_object/data/garden/output/point_cloud/iteration_7000/point_cloud.ply"
+object_gaussians_path: "/root/projects/insert_object/data/ficus/output/point_cloud/iteration_30000/point_cloud.ply"
+object_mask_path: "/root/projects/third_party/GracoNet-Object-Placement/blended_msk.png"
+object_on_bg_img_path: "/root/projects/third_party/GracoNet-Object-Placement/blended_img.png"
+depth_scale_range:
+  start: 0.5
+  end: 2.5
+  step: 0.1
+resolution:
+  width: 1600
+  height: 1036
+cams:
+  main_cam_id: 0
+  second_cam_id: 5

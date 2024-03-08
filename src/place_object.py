@@ -1,6 +1,8 @@
 import torch
 import numpy as np
 from PIL import Image
+from omegaconf import OmegaConf
+
 from torchvision.ops import masks_to_boxes
 from torchvision.transforms.functional import to_tensor
 
@@ -25,18 +27,15 @@ from submodules.gaussian_editor.threestudio.utils.transform import (
 from submodules.gaussian_editor.gaussiansplatting.scene.cameras import Camera
 
 
-# TODO move to arguments
-# BG_SCENE_PATH = '/root/projects/insert_object/data/garden/output'
-# BG_GAUSSIANS_PATH = "/root/projects/insert_object/data/garden/output/point_cloud/iteration_7000/point_cloud.ply"
-# FG_GAUSSIANS_PATH = "/root/projects/insert_object/data/ficus/output/point_cloud/iteration_30000/point_cloud.ply"
-
-
-def get_object_bbox(mask_path: str, mask_width: int, mask_height: int) -> torch.Tensor:
+def get_object_bbox_and_mask(
+    mask_path: str, mask_width: int, mask_height: int
+) -> torch.Tensor:
     mask = Image.open(mask_path).convert("RGB").resize((mask_width, mask_height))
     mask = np.array(mask)
     mask = mask[:, :, 2] > 0
     mask = torch.from_numpy(mask)
-    return masks_to_boxes(mask[None])[0].to("cuda")
+    bbox = masks_to_boxes(mask[None])[0].to("cuda")
+    return bbox, mask
 
 
 def get_object_on_bg_arr(
@@ -178,7 +177,7 @@ def place_object_in_bg(
     object_mask: torch.Tensor,
     object_bbox: torch.Tensor,
     depth_estimator: DPT,
-    object_on_bg_img_arr: torch.Tensor,
+    object_on_bg_arr: torch.Tensor,
 ):
     bg_color = torch.tensor([1, 1, 1], dtype=torch.float32, device="cuda")
     rendered_depth, bg_estimated_depth, object_estimated_depth = get_depths(
@@ -187,7 +186,7 @@ def place_object_in_bg(
         pipeline_params,
         object_mask,
         depth_estimator,
-        object_on_bg_img_arr,
+        object_on_bg_arr,
         bg_color,
     )
     object_center = get_object_center(object_bbox, cam)
@@ -204,8 +203,69 @@ def place_object_in_bg(
     bg_gaussians.concat_gaussians(object_gaussians)
 
 
+def get_config(base_config_file_path: str) -> dict:
+    base_configs = OmegaConf.load(base_config_file_path)
+    cli_configs = OmegaConf.from_cli()
+    config = OmegaConf.merge(base_configs, cli_configs)
+    return OmegaConf.to_container(config, resolve=True)
+
+
+def get_cams(bg_gaussians, bg_dataset_params, iteration, main_cam_id, second_cam_id):
+    scene = Scene(
+        bg_dataset_params, bg_gaussians, load_iteration=iteration, shuffle=False
+    )
+    all_cams = scene.getTrainCameras()
+    main_cam = all_cams[main_cam_id]
+    second_cam = all_cams[second_cam_id]
+    return main_cam, second_cam
+
+
 def main():
-    pass
+    config = get_config("src/config.yml")
+
+    bg_gaussians = get_bg_gaussians(config["bg_gaussians_path"])
+    bg_gaussians_params = get_gaussians_params(config["bg_scene_path"])
+    object_gaussians = get_object_gaussians(
+        config["object_gaussians_path"],
+        bg_gaussians_params["dataset_params"].sh_degree,
+    )
+    main_cam, second_cam = get_cams(
+        bg_gaussians,
+        bg_gaussians_params["dataset_params"],
+        bg_gaussians_params["iteration"],
+        config["cams"]["main_cam_id"],
+        config["cams"]["second_cam_id"],
+    )
+
+    object_bbox, object_mask = get_object_bbox_and_mask(
+        config["object_mask_path"],
+        config["resolution"]["width"],
+        config["resolution"]["height"],
+    )
+    depth_estimator = DPT(get_device(), mode="depth")
+    object_on_bg_arr = get_object_on_bg_arr(
+        config["object_on_bg_img_path"],
+        config["resolution"]["width"],
+        config["resolution"]["height"],
+    )
+
+    for depth_scale in range(
+        config["depth_scale"]["start"],
+        config["depth_scale"]["end"],
+        config["depth_scale"]["step"],
+    ):
+        place_object_in_bg(
+            bg_gaussians,
+            object_gaussians,
+            main_cam,
+            depth_scale,
+            bg_gaussians_params["pipeline_params"],
+            bg_gaussians_params["training_params"],
+            object_mask,
+            object_bbox,
+            depth_estimator,
+            object_on_bg_arr,
+        )
 
 
 if __name__ == "__main__":
