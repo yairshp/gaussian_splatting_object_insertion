@@ -1010,7 +1010,7 @@ class DPT:
                 ]
             )
         elif self.mode == "normal":
-            path = ".cache/dpt/omnidata_dpt_normal_v2.ckpt"
+            path = "/root/projects/insert_object/gaussian_splatting_object_insertion/src/.cache/dpt/omnidata_dpt_normal_v2.ckpt"
             self.model = DPTDepthModel(backbone="vitb_rn50_384", num_channels=3)
             self.aug = transforms.Compose(
                 [

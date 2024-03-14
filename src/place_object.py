@@ -4,9 +4,9 @@ from PIL import Image
 from omegaconf import OmegaConf
 
 from torchvision.ops import masks_to_boxes
-from torchvision.transforms.functional import to_tensor
+from torchvision.transforms.functional import to_tensor, to_pil_image
 
-from utils import get_gaussians_params
+from utils import get_gaussians_params, rotation_matrix_chair
 from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import fov2focal
 from submodules.gaussian_editor.threestudio.utils.dpt import DPT
 from submodules.gaussian_editor.threestudio.utils.misc import get_device
@@ -79,18 +79,19 @@ def get_object_gaussians(gaussians_path: str, sh_degree: float) -> VanillaGaussi
     return gaussians
 
 
-def transfrom_object(object_gaussians, cam, T_in_cam, real_scale):
+def transfrom_object(object_gaussians, cam, T_in_cam, real_scale, depth_scale):
     object_gaussians._xyz.data -= object_gaussians._xyz.data.mean(dim=0, keepdim=True)
 
-    rotate_gaussians(object_gaussians, default_model_mtx.T)
+    # rotate_gaussians(object_gaussians, default_model_mtx.T)
+    rotate_gaussians(object_gaussians, rotation_matrix_chair.T.to("cuda").float())
 
     object_scale = (
         object_gaussians._xyz.data.max(dim=0)[0]
         - object_gaussians._xyz.data.min(dim=0)[0]
     )[:2]
 
-    relative_scale = (real_scale / object_scale).mean()
-    print(relative_scale)
+    relative_scale = (real_scale / object_scale).mean() * depth_scale
+    # print(relative_scale)
 
     scale_gaussians(object_gaussians, relative_scale)
 
@@ -102,6 +103,11 @@ def transfrom_object(object_gaussians, cam, T_in_cam, real_scale):
     rotate_gaussians(object_gaussians, R)
     translate_gaussians(object_gaussians, T)
 
+    # todo remove
+    translate_gaussians(
+        object_gaussians, torch.tensor([0, 0, -0.6 * depth_scale]).cuda()
+    )
+
 
 def get_object_tranforms_params(
     cam,
@@ -110,6 +116,7 @@ def get_object_tranforms_params(
     bg_estimated_depth,
     object_estimated_depth,
     object_center,
+    object_bbox,
 ):
     # assuming rendered_depth = a * estimated_depth + b
     y = rendered_depth
@@ -124,11 +131,13 @@ def get_object_tranforms_params(
     x_in_cam, y_in_cam = (object_center.cuda()) * scaled_z_in_cam
     T_in_cam = torch.stack([x_in_cam, y_in_cam, scaled_z_in_cam], dim=-1)
 
-    bbox = bbox.cuda()
+    object_bbox = object_bbox.cuda()
     fx = fov2focal(cam.FoVx, cam.image_width)
     fy = fov2focal(cam.FoVy, cam.image_height)
     real_scale = (
-        (bbox[2:] - bbox[:2]) / torch.tensor([fx, fy], device="cuda") * z_in_cam
+        (object_bbox[2:] - object_bbox[:2])
+        / torch.tensor([fx, fy], device="cuda")
+        * z_in_cam
     )
 
     return T_in_cam, real_scale
@@ -197,10 +206,12 @@ def place_object_in_bg(
         bg_estimated_depth,
         object_estimated_depth,
         object_center,
+        object_bbox,
     )
-    transfrom_object(object_gaussians, cam, T_in_cam, real_scale)
+    transfrom_object(object_gaussians, cam, T_in_cam, real_scale, depth_scale)
     bg_gaussians.training_setup(training_params)
     bg_gaussians.concat_gaussians(object_gaussians)
+    pass
 
 
 def get_config(base_config_file_path: str) -> dict:
@@ -210,29 +221,25 @@ def get_config(base_config_file_path: str) -> dict:
     return OmegaConf.to_container(config, resolve=True)
 
 
-def get_cams(bg_gaussians, bg_dataset_params, iteration, main_cam_id, second_cam_id):
-    scene = Scene(
-        bg_dataset_params, bg_gaussians, load_iteration=iteration, shuffle=False
-    )
+def get_cams(gaussians, dataset_params, iteration, main_cam_id, second_cam_id):
+    scene = Scene(dataset_params, gaussians, load_iteration=iteration, shuffle=False)
     all_cams = scene.getTrainCameras()
-    main_cam = all_cams[main_cam_id]
-    second_cam = all_cams[second_cam_id]
-    return main_cam, second_cam
+    # main_cam = all_cams[main_cam_id]
+    # second_cam = all_cams[second_cam_id]
+    # return main_cam, second_cam
+    cams = [all_cams[main_cam_id + i] for i in range(0, 21, 5)]
+    return cams, None
 
 
 def get_view_score(rendered_img):
-    pass
+    return None  # TODO implement
 
 
 def main():
-    config = get_config("src/config.yml")
+    config = get_config("config.yml")
 
     bg_gaussians = get_bg_gaussians(config["bg_gaussians_path"])
     bg_gaussians_params = get_gaussians_params(config["bg_scene_path"])
-    object_gaussians = get_object_gaussians(
-        config["object_gaussians_path"],
-        bg_gaussians_params["dataset_params"].sh_degree,
-    )
     main_cam, second_cam = get_cams(
         bg_gaussians,
         bg_gaussians_params["dataset_params"],
@@ -241,11 +248,20 @@ def main():
         config["cams"]["second_cam_id"],
     )
 
-    object_bbox, object_mask = get_object_bbox_and_mask(
-        config["object_mask_path"],
-        config["resolution"]["width"],
-        config["resolution"]["height"],
+    object_gaussians = get_object_gaussians(
+        config["object_gaussians_path"],
+        bg_gaussians_params["dataset_params"].sh_degree,
     )
+
+    # object_gaussians_params = get_gaussians_params(config["object_scene_path"])
+    # object_main_cam, _ = get_cams(
+    #     object_gaussians,
+    #     object_gaussians_params["dataset_params"],
+    #     object_gaussians_params["iteration"],
+    #     5,
+    #     5,
+    # )
+
     depth_estimator = DPT(get_device(), mode="depth")
     object_on_bg_arr = get_object_on_bg_arr(
         config["object_on_bg_img_path"],
@@ -253,17 +269,28 @@ def main():
         config["resolution"]["height"],
     )
 
+    object_bbox, object_mask = get_object_bbox_and_mask(
+        config["object_mask_path"],
+        config["resolution"]["width"],
+        config["resolution"]["height"],
+    )
+
     render_bg_color = torch.tensor([1, 1, 1], dtype=torch.float32, device="cuda")
 
-    for depth_scale in range(
-        config["depth_scale"]["start"],
-        config["depth_scale"]["end"],
-        config["depth_scale"]["step"],
-    ):
+    depth_scale_range = [
+        x / 10.0
+        for x in range(
+            int(config["depth_scale_range"]["start"] * 10),
+            int(config["depth_scale_range"]["end"] * 10),
+            int(config["depth_scale_range"]["step"] * 10),
+        )
+    ]
+    for depth_scale in depth_scale_range:
         place_object_in_bg(
             bg_gaussians,
             object_gaussians,
-            main_cam,
+            main_cam[0],
+            # main_cam,
             depth_scale,
             bg_gaussians_params["pipeline_params"],
             bg_gaussians_params["training_params"],
@@ -271,15 +298,26 @@ def main():
             object_bbox,
             depth_estimator,
             object_on_bg_arr,
-        )
-
-        second_view_render_pkg = render(
-            second_cam,
-            bg_gaussians,
-            bg_gaussians_params["pipeline_params"],
             render_bg_color,
         )
-        score = get_view_score(second_view_render_pkg["render"])
+
+        for i, cam in enumerate(main_cam):
+            second_view_render_pkg = render(
+                cam,
+                # second_cam,
+                bg_gaussians,
+                bg_gaussians_params["pipeline_params"],
+                render_bg_color,
+            )
+            rendering = to_pil_image(second_view_render_pkg["render"])
+            rendering.save(f"outputs/rendering_{depth_scale}_{i}.png")
+            score = get_view_score(second_view_render_pkg["render"])
+
+        bg_gaussians = get_bg_gaussians(config["bg_gaussians_path"])
+        object_gaussians = get_object_gaussians(
+            config["object_gaussians_path"],
+            bg_gaussians_params["dataset_params"].sh_degree,
+        )
 
 
 if __name__ == "__main__":
