@@ -6,7 +6,7 @@ from omegaconf import OmegaConf
 from torchvision.ops import masks_to_boxes
 from torchvision.transforms.functional import to_tensor, to_pil_image
 
-from utils import get_gaussians_params, rotation_matrix_chair
+from utils import get_gaussians_params, rotation_matrix_chair, rotation_matrix_trash_can
 from submodules.gaussian_editor.gaussiansplatting.utils.graphics_utils import fov2focal
 from submodules.gaussian_editor.threestudio.utils.dpt import DPT
 from submodules.gaussian_editor.threestudio.utils.misc import get_device
@@ -82,8 +82,9 @@ def get_object_gaussians(gaussians_path: str, sh_degree: float) -> VanillaGaussi
 def transfrom_object(object_gaussians, cam, T_in_cam, real_scale, depth_scale):
     object_gaussians._xyz.data -= object_gaussians._xyz.data.mean(dim=0, keepdim=True)
 
-    # rotate_gaussians(object_gaussians, default_model_mtx.T)
-    rotate_gaussians(object_gaussians, rotation_matrix_chair.T.to("cuda").float())
+    rotate_gaussians(object_gaussians, default_model_mtx.T)
+    # rotate_gaussians(object_gaussians, rotation_matrix_chair.T.to("cuda").float())
+    # rotate_gaussians(object_gaussians, rotation_matrix_trash_can.T.to("cuda").float())
 
     object_scale = (
         object_gaussians._xyz.data.max(dim=0)[0]
@@ -105,7 +106,9 @@ def transfrom_object(object_gaussians, cam, T_in_cam, real_scale, depth_scale):
 
     # todo remove
     translate_gaussians(
-        object_gaussians, torch.tensor([0, 0, -0.6 * depth_scale]).cuda()
+        # object_gaussians, torch.tensor([0, 0, -0.6 * depth_scale]).cuda()
+        object_gaussians,
+        torch.tensor([-0.5 * depth_scale, 0, 0]).cuda(),
     )
 
 
@@ -221,14 +224,14 @@ def get_config(base_config_file_path: str) -> dict:
     return OmegaConf.to_container(config, resolve=True)
 
 
-def get_cams(gaussians, dataset_params, iteration, main_cam_id, second_cam_id):
+def get_cams(gaussians, dataset_params, iteration, main_cam_id, secondary_cams_ids):
     scene = Scene(dataset_params, gaussians, load_iteration=iteration, shuffle=False)
     all_cams = scene.getTrainCameras()
-    # main_cam = all_cams[main_cam_id]
-    # second_cam = all_cams[second_cam_id]
-    # return main_cam, second_cam
-    cams = [all_cams[main_cam_id + i] for i in range(0, 21, 5)]
-    return cams, None
+    main_cam = all_cams[main_cam_id]
+    secondary_cams = [all_cams[i] for i in secondary_cams_ids]
+    return main_cam, secondary_cams
+    # cams = [all_cams[main_cam_id + i] for i in range(0, 21, 5)]
+    # return cams, None
 
 
 def get_view_score(rendered_img):
@@ -240,13 +243,14 @@ def main():
 
     bg_gaussians = get_bg_gaussians(config["bg_gaussians_path"])
     bg_gaussians_params = get_gaussians_params(config["bg_scene_path"])
-    main_cam, second_cam = get_cams(
+    main_cam, secondary_cams = get_cams(
         bg_gaussians,
         bg_gaussians_params["dataset_params"],
         bg_gaussians_params["iteration"],
         config["cams"]["main_cam_id"],
-        config["cams"]["second_cam_id"],
+        config["cams"]["secondary_cams_ids"],
     )
+    all_cams = [main_cam] + secondary_cams
 
     object_gaussians = get_object_gaussians(
         config["object_gaussians_path"],
@@ -289,8 +293,7 @@ def main():
         place_object_in_bg(
             bg_gaussians,
             object_gaussians,
-            main_cam[0],
-            # main_cam,
+            main_cam,
             depth_scale,
             bg_gaussians_params["pipeline_params"],
             bg_gaussians_params["training_params"],
@@ -301,7 +304,7 @@ def main():
             render_bg_color,
         )
 
-        for i, cam in enumerate(main_cam):
+        for i, cam in enumerate(all_cams):
             second_view_render_pkg = render(
                 cam,
                 # second_cam,
@@ -310,7 +313,9 @@ def main():
                 render_bg_color,
             )
             rendering = to_pil_image(second_view_render_pkg["render"])
-            rendering.save(f"outputs/rendering_{depth_scale}_{i}.png")
+            rendering.save(
+                f"outputs/{config['exp_name']}/rendering_{depth_scale}_{i}.png"
+            )
             score = get_view_score(second_view_render_pkg["render"])
 
         bg_gaussians = get_bg_gaussians(config["bg_gaussians_path"])
