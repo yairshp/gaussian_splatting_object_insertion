@@ -82,8 +82,8 @@ def get_object_gaussians(gaussians_path: str, sh_degree: float) -> VanillaGaussi
 def transfrom_object(object_gaussians, cam, T_in_cam, real_scale, depth_scale):
     object_gaussians._xyz.data -= object_gaussians._xyz.data.mean(dim=0, keepdim=True)
 
-    rotate_gaussians(object_gaussians, default_model_mtx.T)
-    # rotate_gaussians(object_gaussians, rotation_matrix_chair.T.to("cuda").float())
+    # rotate_gaussians(object_gaussians, default_model_mtx.T)
+    rotate_gaussians(object_gaussians, rotation_matrix_chair.T.to("cuda").float())
     # rotate_gaussians(object_gaussians, rotation_matrix_trash_can.T.to("cuda").float())
 
     object_scale = (
@@ -105,11 +105,12 @@ def transfrom_object(object_gaussians, cam, T_in_cam, real_scale, depth_scale):
     translate_gaussians(object_gaussians, T)
 
     # todo remove
-    translate_gaussians(
-        # object_gaussians, torch.tensor([0, 0, -0.6 * depth_scale]).cuda()
-        object_gaussians,
-        torch.tensor([-0.5 * depth_scale, 0, 0]).cuda(),
-    )
+    # translate_gaussians(
+    #     object_gaussians,
+    #     # torch.tensor([0, 0, -0.6 * depth_scale]).cuda(),
+    #     # torch.tensor([0, -0.2 * depth_scale, 0]).cuda(),
+    #     torch.tensor([0, -0.1, 0]).cuda(),
+    # )
 
 
 def get_object_tranforms_params(

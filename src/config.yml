@@ -1,27 +1,39 @@
-exp_name: "trash_can_in_bicycle"
-# bg_scene_path: "/root/output_models/place_object/gaussian_splatting/mipnerf_360/garden"
-bg_scene_path: "/root/output_models/place_object/gaussian_splatting/mipnerf_360/bicycle"
-# bg_gaussians_path: "/root/output_models/place_object/gaussian_splatting/mipnerf_360/garden/point_cloud/iteration_7000/point_cloud.ply"
-bg_gaussians_path: "/root/output_models/place_object/gaussian_splatting/mipnerf_360/bicycle/point_cloud/iteration_30000/point_cloud.ply"
-# object_scene_path: "/root/output_models/place_object/gaussian_splatting/nerf_synthetic/chair"
-object_scene_path: "/root/output_models/place_object/gaussian_splatting/objaverse/trash_can"
-object_gaussians_path: "/root/output_models/place_object/gaussian_splatting/objaverse/trash_can/point_cloud/iteration_30000/point_cloud.ply"
-# object_mask_path: "/root/projects/third_party/GracoNet-Object-Placement/chair_in_garden_msk.png"
-object_mask_path: "/root/projects/third_party/GracoNet-Object-Placement/trash_can_in_bicycle_msk.png"
-# object_on_bg_img_path: "/root/projects/third_party/GracoNet-Object-Placement/chair_in_garden_img.png"
-object_on_bg_img_path: "/root/projects/third_party/GracoNet-Object-Placement/trash_can_in_bicycle_img.png"
+exp_name: "chair_in_garden_anydoor"
+bg_scene_path: "/root/output_models/place_object/gaussian_splatting/mipnerf_360/garden"
+# bg_scene_path: "/root/output_models/place_object/gaussian_splatting/mipnerf_360/bicycle"
+bg_gaussians_path: "/root/output_models/place_object/gaussian_splatting/mipnerf_360/garden/point_cloud/iteration_7000/point_cloud.ply"
+# bg_gaussians_path: "/root/output_models/place_object/gaussian_splatting/mipnerf_360/bicycle/point_cloud/iteration_30000/point_cloud.ply"
+object_scene_path: "/root/output_models/place_object/gaussian_splatting/nerf_synthetic/chair"
+# object_scene_path: "/root/output_models/place_object/gaussian_splatting/objaverse/backpack"
+# object_scene_path: "/root/output_models/place_object/gaussian_splatting/objaverse/trash_can"
+# object_gaussians_path: "/root/output_models/place_object/gaussian_splatting/objaverse/backpack/point_cloud/iteration_30000/point_cloud.ply"
+# object_gaussians_path: "/root/output_models/place_object/gaussian_splatting/objaverse/trash_can/point_cloud/iteration_30000/point_cloud.ply"
+object_gaussians_path: "/root/output_models/place_object/gaussian_splatting/nerf_synthetic/chair/point_cloud/iteration_30000/point_cloud.ply"
+object_mask_path: "/root/projects/third_party/GracoNet-Object-Placement/chair_in_garden_msk.png"
+# object_mask_path: "/root/projects/third_party/GracoNet-Object-Placement/trash_can_in_bicycle_msk.png"
+# object_mask_path: "/root/projects/third_party/GracoNet-Object-Placement/backpack_in_bicycle_msk.png"
+object_on_bg_img_path: "/root/projects/third_party/GracoNet-Object-Placement/chair_in_garden_img_2.png"
+# object_on_bg_img_path: "/root/projects/third_party/AnyDoor/examples/TestDreamBooth/GEN/gen_res_2.png"
+# object_on_bg_img_path: "/root/projects/third_party/GracoNet-Object-Placement/backpack_in_bicycle_img.png"
+# object_on_bg_img_path: "/root/projects/third_party/GracoNet-Object-Placement/trash_can_in_bicycle_img.png"
 depth_scale_range:
-  start: 1.
-  end: 3.5
+  start: 0.8
+  end: 1.2
   step: 0.1
 resolution:
   width: 1600
-  height: 1063
+  height: 1036
+  # height: 1063
 cams:
-  # main_cam_id: 0
-  main_cam_id: 4
+  main_cam_id: 0
+  # main_cam_id: 4
+  # main_cam_id: 24
   secondary_cams_ids:
-    - 11
-    - 14
-    - 16
-    - 18
+    # - 12
+    # - 14
+    # - 16
+    # - 18
+    - 5
+    - 10
+    - 15
+    - 20
